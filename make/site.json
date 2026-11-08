@@ -1,0 +1,10 @@
+{
+  "description": "A church management platform that helps ministries track members, donations, attendance, and events to build more connected, engaged congregations.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
