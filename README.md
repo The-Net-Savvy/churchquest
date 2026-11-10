@@ -1,4 +1,19 @@
-# Figma Make and Code Layers files
+# ChurchQuest
+
+A React and Vite landing page for ChurchQuest.
+
+## Development
+
+Requires Node.js and pnpm.
+
+```sh
+pnpm install --frozen-lockfile
+pnpm dev
+```
+
+Run `pnpm build` to create a production build.
+
+## Figma Make and Code Layers files
 
 This directory contains scripts, configuration, and generated files that Figma
 Make and Code Layers use to install dependencies, run your app, build previews,
