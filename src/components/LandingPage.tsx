@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, type SVGProps } from "react"
 
 type IconProps = SVGProps<SVGSVGElement>
@@ -103,7 +105,7 @@ function Logo({ light = false }: { light?: boolean }) {
   )
 }
 
-function MiniAvatar({ name, color }: { name: string color: string }) {
+function MiniAvatar({ name, color }: { name: string; color: string }) {
   return (
     <span className="mini-avatar" style={{ background: color }}>
       {name}
@@ -276,7 +278,7 @@ function DashboardPreview() {
   )
 }
 
-function App() {
+function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [feature, setFeature] = useState<"sync" | "analytics" | "schedule">(
     "sync",
@@ -691,4 +693,4 @@ function App() {
   )
 }
 
-export default App
+export default LandingPage
