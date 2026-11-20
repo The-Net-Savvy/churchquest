@@ -1,0 +1,616 @@
+.authPage {
+  position: relative;
+  display: flex;
+  min-height: 100svh;
+  overflow: hidden;
+  align-items: center;
+  color: #0a2445;
+  background:
+    radial-gradient(ellipse at 29% 92%, rgba(103, 213, 255, 0.85), transparent 35%),
+    linear-gradient(125deg, #178fe0 0%, #0474ca 42%, #078fe0 74%, #29b8f2 100%);
+  isolation: isolate;
+}
+
+.scenery {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.sunGlow {
+  position: absolute;
+  top: -150px;
+  right: -100px;
+  width: 360px;
+  height: 330px;
+  border-radius: 50%;
+  background: #c9ff59;
+  filter: blur(1px);
+}
+
+.clouds {
+  position: absolute;
+  right: -5%;
+  bottom: -115px;
+  left: -9%;
+  height: 270px;
+  background:
+    radial-gradient(ellipse at 9% 67%, rgba(255, 255, 255, 0.93) 0 9%, transparent 10%),
+    radial-gradient(ellipse at 18% 74%, rgba(255, 255, 255, 0.87) 0 12%, transparent 13%),
+    radial-gradient(ellipse at 36% 88%, rgba(255, 255, 255, 0.82) 0 13%, transparent 14%),
+    radial-gradient(ellipse at 58% 76%, rgba(255, 255, 255, 0.9) 0 10%, transparent 11%),
+    radial-gradient(ellipse at 78% 72%, rgba(255, 255, 255, 0.82) 0 12%, transparent 13%),
+    radial-gradient(ellipse at 95% 56%, rgba(255, 255, 255, 0.85) 0 11%, transparent 12%);
+  filter: blur(7px);
+}
+
+.hillTop,
+.hillBottom {
+  position: absolute;
+  width: 430px;
+  height: 145px;
+  border-radius: 50%;
+  background: #c9ff59;
+}
+
+.hillTop {
+  top: -108px;
+  right: -188px;
+  transform: rotate(-24deg);
+}
+
+.hillBottom {
+  bottom: -114px;
+  left: -152px;
+  transform: rotate(18deg);
+}
+
+.church {
+  position: absolute;
+  bottom: 1.5%;
+  left: 3%;
+  width: min(37vw, 390px);
+  max-height: 39vh;
+  filter: drop-shadow(0 10px 24px rgba(0, 40, 100, 0.23));
+}
+
+.content {
+  display: grid;
+  width: min(1160px, calc(100% - 64px));
+  margin: auto;
+  padding-block: 42px;
+  grid-template-columns: minmax(0, 0.92fr) minmax(490px, 1.2fr);
+  align-items: center;
+  gap: clamp(44px, 7vw, 100px);
+}
+
+.story {
+  color: #fff;
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+  font-family: "Manrope", sans-serif;
+  font-size: 23px;
+  font-weight: 800;
+  letter-spacing: -0.055em;
+}
+
+.logoMark {
+  display: grid;
+  width: 37px;
+  height: 37px;
+  transform: rotate(45deg);
+  place-items: center;
+  border-radius: 11px 5px 11px 5px;
+  background: #fff;
+}
+
+.logoMark svg {
+  width: 23px;
+  height: 23px;
+  transform: rotate(-45deg);
+  color: #0876d2;
+}
+
+.storyCopy {
+  margin-top: 57px;
+}
+
+.storyCopy h2 {
+  margin: 0;
+  font-family: "Manrope", sans-serif;
+  font-size: clamp(39px, 4vw, 48px);
+  font-weight: 800;
+  letter-spacing: -0.065em;
+  line-height: 1.1;
+}
+
+.storyCopy h2 span,
+.storyCopy h2 strong {
+  display: block;
+}
+
+.storyCopy h2 span {
+  color: #c7e6ff;
+}
+
+.storyCopy h2 strong {
+  color: #c9ff59;
+  font-weight: 800;
+}
+
+.storyCopy p {
+  margin: 20px 0 0;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.values {
+  display: flex;
+  margin: 28px 0 0;
+  padding: 0;
+  gap: 28px;
+  list-style: none;
+}
+
+.values li {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.valueIcon {
+  display: grid;
+  width: 55px;
+  height: 55px;
+  place-items: center;
+  border: 2px solid rgba(198, 237, 255, 0.45);
+  border-radius: 50%;
+  color: #c9ff59;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.valueIcon svg {
+  width: 27px;
+  height: 27px;
+}
+
+.card {
+  width: 100%;
+  padding: 24px 38px 23px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 25px 70px rgba(0, 45, 99, 0.23);
+}
+
+.tabs {
+  display: grid;
+  padding: 4px;
+  grid-template-columns: 1fr 1fr;
+  border-radius: 99px;
+  background: #e8f2ff;
+}
+
+.tabs button {
+  display: flex;
+  min-height: 52px;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border: 0;
+  border-radius: 99px;
+  color: #0876eb;
+  background: transparent;
+  font: 700 14px "Manrope", sans-serif;
+  transition: background 160ms ease, color 160ms ease;
+}
+
+.tabs button svg {
+  width: 21px;
+  height: 21px;
+}
+
+.tabs .activeTab {
+  color: #102b45;
+  background: #c9ff59;
+}
+
+.formIntro {
+  margin: 23px 0 24px;
+}
+
+.formIntro h1 {
+  margin: 0;
+  color: #0b2444;
+  font-family: "Manrope", sans-serif;
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -0.055em;
+  line-height: 1.15;
+}
+
+.formIntro p {
+  margin: 7px 0 0;
+  color: #657b98;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.form {
+  display: grid;
+  gap: 14px;
+}
+
+.field {
+  display: flex;
+  min-height: 58px;
+  align-items: center;
+  overflow: hidden;
+  border: 1px solid #cbdcf1;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: inset 0 1px 2px rgba(13, 61, 110, 0.025);
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.field:focus-within {
+  border-color: #1683ef;
+  box-shadow: 0 0 0 3px rgba(22, 131, 239, 0.13);
+}
+
+.fieldIcon {
+  display: grid;
+  width: 55px;
+  min-height: 56px;
+  flex: 0 0 auto;
+  place-items: center;
+  color: #0876eb;
+  background: #e8f3ff;
+}
+
+.fieldIcon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.field input {
+  width: 100%;
+  min-width: 0;
+  height: 56px;
+  padding: 0 16px;
+  border: 0;
+  outline: 0;
+  color: #102b45;
+  background: transparent;
+  font: 500 14px "DM Sans", sans-serif;
+}
+
+.field input::placeholder {
+  color: #8296b2;
+  opacity: 1;
+}
+
+.passwordToggle {
+  display: grid;
+  width: 48px;
+  height: 54px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 0;
+  color: #8195b0;
+  background: transparent;
+}
+
+.passwordToggle svg {
+  width: 22px;
+  height: 22px;
+}
+
+.formOptions {
+  display: flex;
+  min-height: 24px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #39516f;
+  font-size: 13px;
+}
+
+.remember {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.remember input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: #0876eb;
+}
+
+.textButton,
+.accountPrompt button {
+  padding: 0;
+  border: 0;
+  color: #0876eb;
+  background: transparent;
+  font: inherit;
+  font-weight: 700;
+}
+
+.status {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 9px;
+  color: #28496b;
+  background: #edf5ff;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.submitButton {
+  display: flex;
+  min-height: 52px;
+  align-items: center;
+  justify-content: center;
+  gap: 13px;
+  margin-top: 1px;
+  border: 0;
+  border-radius: 99px;
+  color: #102b45;
+  background: #c9ff59;
+  font: 800 15px "Manrope", sans-serif;
+  transition: filter 150ms ease, transform 150ms ease;
+}
+
+.submitButton:hover {
+  filter: brightness(0.97);
+  transform: translateY(-1px);
+}
+
+.submitButton span {
+  font-size: 23px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.divider {
+  display: grid;
+  align-items: center;
+  margin: 20px 0 15px;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 15px;
+}
+
+.divider span {
+  height: 1px;
+  background: #d7e2ef;
+}
+
+.divider p {
+  margin: 0;
+  color: #7185a0;
+  font-size: 12px;
+}
+
+.providers {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.providers button {
+  display: flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid #d6e3f2;
+  border-radius: 14px;
+  color: #344c6c;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  transition: background 150ms ease, border-color 150ms ease;
+}
+
+.providers button:hover {
+  border-color: #a9c8ea;
+  background: #f7fbff;
+}
+
+.providers button > svg,
+.googleIcon {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+}
+
+.googleIcon {
+  display: grid;
+  place-items: center;
+  color: #4285f4;
+  font-family: Arial, sans-serif;
+  font-size: 21px;
+  font-weight: 800;
+}
+
+.microsoftIcon {
+  display: grid;
+  width: 19px;
+  height: 19px;
+  flex: 0 0 auto;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 2px;
+}
+
+.microsoftIcon i:nth-child(1) { background: #f35325; }
+.microsoftIcon i:nth-child(2) { background: #81bc06; }
+.microsoftIcon i:nth-child(3) { background: #05a6f0; }
+.microsoftIcon i:nth-child(4) { background: #ffba08; }
+
+.accountPrompt {
+  margin: 18px 0 0;
+  color: #7185a0;
+  font-size: 12px;
+  text-align: center;
+}
+
+.accountPrompt button {
+  margin-left: 4px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+@media (max-width: 900px) {
+  .content {
+    width: min(100% - 48px, 680px);
+    padding-block: 36px;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: 32px;
+  }
+
+  .storyCopy {
+    margin-top: 42px;
+  }
+
+  .storyCopy h2 {
+    font-size: clamp(34px, 4.5vw, 43px);
+  }
+
+  .values {
+    gap: 13px;
+  }
+
+  .card {
+    padding-inline: 25px;
+  }
+
+  .providers {
+    gap: 6px;
+  }
+
+  .providers button {
+    gap: 5px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 760px) {
+  .authPage {
+    min-height: 100svh;
+    align-items: flex-start;
+  }
+
+  .content {
+    width: min(100% - 32px, 510px);
+    padding-block: 30px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 27px;
+  }
+
+  .storyCopy {
+    margin-top: 25px;
+  }
+
+  .storyCopy h2 {
+    font-size: clamp(31px, 8vw, 40px);
+  }
+
+  .storyCopy p {
+    margin-top: 10px;
+    font-size: 14px;
+  }
+
+  .desktopBreak {
+    display: none;
+  }
+
+  .values {
+    display: none;
+  }
+
+  .church {
+    right: -15%;
+    bottom: 12%;
+    left: auto;
+    width: 65vw;
+    opacity: 0.45;
+  }
+
+  .card {
+    padding: 19px 18px 20px;
+    border-radius: 19px;
+  }
+
+  .tabs button {
+    min-height: 47px;
+    font-size: 12px;
+  }
+
+  .formIntro {
+    margin: 19px 0;
+  }
+
+  .formIntro h1 {
+    font-size: 29px;
+  }
+
+  .formIntro p {
+    font-size: 13px;
+  }
+
+  .field {
+    min-height: 54px;
+    border-radius: 13px;
+  }
+
+  .fieldIcon {
+    width: 49px;
+    min-height: 52px;
+  }
+
+  .field input {
+    height: 52px;
+    padding-inline: 12px;
+    font-size: 13px;
+  }
+
+  .providers button {
+    min-height: 44px;
+    gap: 5px;
+    font-size: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tabs button,
+  .field,
+  .submitButton,
+  .providers button {
+    transition: none;
+  }
+}

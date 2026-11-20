@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { useState, type SVGProps } from "react"
 
 type IconProps = SVGProps<SVGSVGElement>
@@ -340,10 +341,13 @@ function LandingPage() {
             <a href="#about" onClick={() => setMenuOpen(false)}>
               About Us
             </a>
+            <Link href="/auth" onClick={() => setMenuOpen(false)}>
+              Sign In
+            </Link>
           </div>
-          <a className="nav-cta" href="#contact">
+          <Link className="nav-cta" href="/auth">
             Get Started <ArrowUpRight />
-          </a>
+          </Link>
           <button
             className="menu-button"
             onClick={() => setMenuOpen(!menuOpen)}
@@ -372,9 +376,9 @@ function LandingPage() {
             <a className="button button-ghost" href="#dashboard">
               <Play /> View Demo
             </a>
-            <a className="button button-lime" href="#contact">
+            <Link className="button button-lime" href="/auth">
               Get Started <ArrowUpRight />
-            </a>
+            </Link>
           </div>
           <div className="micro-proof">
             <div className="avatar-stack">
@@ -661,12 +665,9 @@ function LandingPage() {
             communities with ChurchQuest.
           </p>
           <div className="hero-actions">
-            <a
-              className="button button-lime"
-              href="mailto:hello@churchquest.app"
-            >
+            <Link className="button button-lime" href="/auth">
               Start free today <ArrowUpRight />
-            </a>
+            </Link>
             <a className="button button-ghost" href="#dashboard">
               <Play /> Watch overview
             </a>
@@ -685,6 +686,7 @@ function LandingPage() {
           <div>
             <a href="#features">Features</a>
             <a href="#about">About</a>
+            <Link href="/auth">Sign in</Link>
             <a href="mailto:hello@churchquest.app">Contact</a>
           </div>
         </div>
