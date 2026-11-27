@@ -2,26 +2,17 @@
 
 import Link from "next/link"
 
-import { useState, type FormEvent, type SVGProps } from "react"
+import { useEffect, useState, type FormEvent, type SVGProps } from "react"
+
+import { saveChurchProfile, type ChurchProfile } from "@/lib/church-profile"
+
+import { createClient } from "@/lib/supabase/client"
 
 import styles from "./AuthPage.module.css"
 
 type IconProps = SVGProps<SVGSVGElement>
 
 type AuthMode = "signIn" | "createAccount"
-
-function MailIcon(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
-      <path
-        d="M4 6.5h16v11H4zM4.5 7l7.5 6 7.5-6"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
 
 function LockIcon(props: IconProps) {
   return (
@@ -61,6 +52,7 @@ function PersonIcon(props: IconProps) {
 
 function EyeIcon({
   hidden = false,
+
   ...props
 }: IconProps & { hidden?: boolean }) {
   return (
@@ -148,7 +140,19 @@ export default function AuthPage() {
 
   const [status, setStatus] = useState<string | null>(null)
 
+  const [email, setEmail] = useState("")
+
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
   const isSignIn = mode === "signIn"
+
+  useEffect(() => {
+    const error = new URLSearchParams(window.location.search).get("error")
+
+    if (error === "callback_failed" || error === "missing_code") {
+      setStatus("We couldn’t complete sign-in. Please try again.")
+    }
+  }, [])
 
   function changeMode(nextMode: AuthMode) {
     setMode(nextMode)
@@ -156,8 +160,10 @@ export default function AuthPage() {
     setStatus(null)
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+
+    setStatus(null)
 
     const formData = new FormData(event.currentTarget)
 
@@ -170,11 +176,202 @@ export default function AuthPage() {
       return
     }
 
-    setStatus(
-      isSignIn
-        ? "Sign-in isn’t connected yet. Add an authentication provider to enable access."
-        : "Account creation isn’t connected yet. Add an authentication provider to get started.",
-    )
+    setIsSubmitting(true)
+
+    let accountCreated = false
+
+    try {
+      const supabase = createClient()
+
+      const password = String(formData.get("password") ?? "")
+
+      if (isSignIn) {
+        const { error } = await supabase.auth.signInWithPassword({
+          email: String(formData.get("email") ?? ""),
+
+          password,
+        })
+
+        if (error) {
+          throw error
+        }
+
+        window.location.assign("/dashboard")
+
+        return
+      }
+
+      const logo = formData.get("churchLogo")
+
+      if (!(logo instanceof File) || logo.size === 0) {
+        setStatus("Choose a church logo to create your church account.")
+
+        setIsSubmitting(false)
+
+        return
+      }
+
+      if (logo.size > 5 * 1024 * 1024) {
+        setStatus("Your logo must be 5 MB or smaller.")
+
+        setIsSubmitting(false)
+
+        return
+      }
+
+      if (!["image/png", "image/jpeg", "image/webp"].includes(logo.type)) {
+        setStatus("Choose a PNG, JPG, or WebP logo.")
+
+        setIsSubmitting(false)
+
+        return
+      }
+
+      const profile: ChurchProfile = {
+        churchName: String(formData.get("churchName") ?? ""),
+
+        churchAddress: String(formData.get("churchAddress") ?? ""),
+
+        churchEmail: String(formData.get("email") ?? ""),
+
+        superAdminUsername: String(
+          formData.get("superAdminUsername") ?? "",
+        ),
+      }
+
+      const callbackUrl = new URL("/auth/callback", window.location.origin)
+
+      callbackUrl.searchParams.set("next", "/dashboard")
+
+      const { data, error } = await supabase.auth.signUp({
+        email: profile.churchEmail,
+
+        password,
+
+        options: {
+          emailRedirectTo: callbackUrl.toString(),
+
+          data: {
+            pending_church_profile: {
+              church_name: profile.churchName,
+
+              church_address: profile.churchAddress,
+
+              church_email: profile.churchEmail,
+
+              super_admin_username: profile.superAdminUsername,
+            },
+          },
+        },
+      })
+
+      if (error) {
+        throw error
+      }
+
+      accountCreated = true
+
+      if (!data.session) {
+        setStatus(
+          "Your account was created. Check your church email to verify it, then finish setup on the dashboard and upload the logo.",
+        )
+
+        setIsSubmitting(false)
+
+        return
+      }
+
+      await saveChurchProfile(supabase, profile, logo)
+
+      window.location.assign("/dashboard")
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Authentication failed. Please try again."
+
+      setStatus(
+        accountCreated
+          ? `Your account was created, but church setup did not finish. Sign in to complete it from your dashboard. ${message}`
+          : message,
+      )
+
+      setIsSubmitting(false)
+    }
+  }
+
+  async function handleOAuth(provider: "google" | "apple" | "azure") {
+    setStatus(null)
+
+    setIsSubmitting(true)
+
+    try {
+      const callbackUrl = new URL("/auth/callback", window.location.origin)
+
+      callbackUrl.searchParams.set("next", "/dashboard")
+
+      const { error } = await createClient().auth.signInWithOAuth({
+        provider,
+
+        options: {
+          redirectTo: callbackUrl.toString(),
+
+          ...(provider === "azure" ? { scopes: "email" } : {}),
+        },
+      })
+
+      if (error) {
+        throw error
+      }
+    } catch (error) {
+      setStatus(
+        error instanceof Error
+          ? error.message
+          : "Social sign-in failed. Please try again.",
+      )
+
+      setIsSubmitting(false)
+    }
+  }
+
+  async function handlePasswordReset() {
+    setStatus(null)
+
+    if (!email.trim()) {
+      setStatus("Enter your email address first so we can send a reset link.")
+
+      return
+    }
+
+    setIsSubmitting(true)
+
+    try {
+      const callbackUrl = new URL("/auth/callback", window.location.origin)
+
+      callbackUrl.searchParams.set("next", "/auth/reset-password")
+
+      const { error } = await createClient().auth.resetPasswordForEmail(
+        email.trim(),
+
+        { redirectTo: callbackUrl.toString() },
+      )
+
+      if (error) {
+        throw error
+      }
+
+      setStatus(
+        "If that email has an account, a password reset link is on its way.",
+      )
+    } catch (error) {
+      setStatus(
+        error instanceof Error
+          ? error.message
+          : "Unable to send a password reset email.",
+      )
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -333,7 +530,7 @@ export default function AuthPage() {
             <p>
               {isSignIn
                 ? "Welcome back! Please enter your details to continue."
-                : "Join your church community. Enter your details to get started."}
+                : "Create your church account and Super Admin login."}
             </p>
           </div>
 
@@ -344,34 +541,75 @@ export default function AuthPage() {
             aria-labelledby={isSignIn ? "sign-in-tab" : "create-account-tab"}
           >
             {!isSignIn && (
-              <label className={styles.field}>
-                <span className={styles.fieldIcon}>
-                  <PersonIcon />
-                </span>
-                <span className={styles.srOnly}>Full name</span>
+              <label className={styles.setupField}>
+                <span>Church name</span>
                 <input
                   type="text"
-                  name="name"
-                  placeholder="Full Name"
-                  autoComplete="name"
+                  name="churchName"
+                  placeholder="Church Name"
+                  autoComplete="organization"
+                  maxLength={160}
                   required
                 />
               </label>
             )}
 
-            <label className={styles.field}>
-              <span className={styles.fieldIcon}>
-                <MailIcon />
-              </span>
-              <span className={styles.srOnly}>Email address</span>
+            {!isSignIn && (
+              <>
+                <label className={styles.setupField}>
+                  <span>Church address</span>
+                  <input
+                    type="text"
+                    name="churchAddress"
+                    placeholder="Church Address"
+                    autoComplete="street-address"
+                    maxLength={500}
+                    required
+                  />
+                </label>
+                <label className={styles.setupField}>
+                  <span>Church logo</span>
+                  <input
+                    type="file"
+                    name="churchLogo"
+                    accept="image/png,image/jpeg,image/webp"
+                    required
+                  />
+                  <small>PNG, JPG, or WebP. Maximum file size: 5 MB.</small>
+                </label>
+              </>
+            )}
+
+            <label className={styles.setupField}>
+              <span>{isSignIn ? "Email address" : "Church email"}</span>
               <input
                 type="email"
                 name="email"
-                placeholder="Email Address"
+                placeholder={isSignIn ? "Email Address" : "Church Email"}
                 autoComplete="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                maxLength={254}
                 required
               />
             </label>
+
+            {!isSignIn && (
+              <label className={styles.setupField}>
+                <span>Super Admin username</span>
+                <input
+                  type="text"
+                  name="superAdminUsername"
+                  placeholder="Super Admin Username"
+                  autoComplete="username"
+                  minLength={3}
+                  maxLength={30}
+                  pattern="[A-Za-z0-9._-]{3,30}"
+                  title="Use 3–30 letters, numbers, periods, underscores, or hyphens."
+                  required
+                />
+              </label>
+            )}
 
             <label className={styles.field}>
               <span className={styles.fieldIcon}>
@@ -422,11 +660,7 @@ export default function AuthPage() {
                 <button
                   className={styles.textButton}
                   type="button"
-                  onClick={() =>
-                    setStatus(
-                      "Password reset isn’t connected yet. Add an authentication provider to enable recovery.",
-                    )
-                  }
+                  onClick={handlePasswordReset}
                 >
                   Forgot Password?
                 </button>
@@ -439,8 +673,16 @@ export default function AuthPage() {
               </p>
             )}
 
-            <button className={styles.submitButton} type="submit">
-              {isSignIn ? "Sign In" : "Create Account"}
+            <button
+              className={styles.submitButton}
+              type="submit"
+              disabled={isSubmitting}
+            >
+              {isSubmitting
+                ? "Please wait…"
+                : isSignIn
+                  ? "Sign In"
+                  : "Create church account"}
               <span aria-hidden="true">→</span>
             </button>
           </form>
@@ -454,14 +696,16 @@ export default function AuthPage() {
           <div className={styles.providers}>
             <button
               type="button"
-              onClick={() => setStatus("Google sign-in isn’t configured yet.")}
+              disabled={isSubmitting}
+              onClick={() => void handleOAuth("google")}
             >
               <span className={styles.googleIcon}>G</span>
               Google
             </button>
             <button
               type="button"
-              onClick={() => setStatus("Apple sign-in isn’t configured yet.")}
+              disabled={isSubmitting}
+              onClick={() => void handleOAuth("apple")}
             >
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path
@@ -473,9 +717,8 @@ export default function AuthPage() {
             </button>
             <button
               type="button"
-              onClick={() =>
-                setStatus("Microsoft sign-in isn’t configured yet.")
-              }
+              disabled={isSubmitting}
+              onClick={() => void handleOAuth("azure")}
             >
               <span className={styles.microsoftIcon} aria-hidden="true">
                 <i />

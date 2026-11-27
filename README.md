@@ -13,6 +13,26 @@ pnpm dev
 
 Run `pnpm build` to create a production build.
 
+## Supabase authentication
+
+1. Copy `.env.example` to `.env.local` and set your Supabase project URL and
+   publishable (or legacy anon) key.
+2. Run the SQL migration in `supabase/migrations/20261127000000_church_accounts.sql`
+   in the Supabase SQL Editor. It creates church profiles, Super Admin
+   membership, row-level security, and the public `church-logos` storage bucket.
+3. In Supabase Authentication, set the site URL and add
+   `http://localhost:3000/auth/callback` (plus your deployed callback URL) to
+   the allowed redirect URLs.
+4. Enable Google, Apple, and Azure (Microsoft) providers in Supabase and add
+   each provider's credentials and Supabase callback URL as instructed by its
+   provider setup page.
+
+Church email and password signups use the church email as the Supabase login.
+When email confirmation is enabled, the user confirms that address before
+finishing setup and uploading the logo. Google, Apple, and Microsoft sign-in
+create or sign into a Supabase user and then open the church setup step on the
+dashboard. The Super Admin username is stored separately from the login email.
+
 ## Figma Make and Code Layers files
 
 This directory contains scripts, configuration, and generated files that Figma

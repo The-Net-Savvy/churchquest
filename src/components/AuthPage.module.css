@@ -2,7 +2,8 @@
   position: relative;
   display: flex;
   min-height: 100svh;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   align-items: center;
   color: #0a2445;
   background:
@@ -254,6 +255,47 @@
   gap: 14px;
 }
 
+.setupField,
+.logoField {
+  display: grid;
+  min-width: 0;
+  gap: 7px;
+  color: #39516f;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.setupField input,
+.logoField input {
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 10px 13px;
+  border: 1px solid #cbdcf1;
+  border-radius: 12px;
+  outline: 0;
+  color: #102b45;
+  background: #fff;
+  font: 500 14px "DM Sans", sans-serif;
+}
+
+.setupField input:focus,
+.logoField input:focus {
+  border-color: #1683ef;
+  box-shadow: 0 0 0 3px rgba(22, 131, 239, 0.13);
+}
+
+.logoField input {
+  padding: 8px;
+  font-size: 12px;
+}
+
+.logoField small {
+  color: #7185a0;
+  font-size: 11px;
+  font-weight: 400;
+}
+
 .field {
   display: flex;
   min-height: 58px;
@@ -382,6 +424,12 @@
   transform: translateY(-1px);
 }
 
+.submitButton:disabled,
+.providers button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
 .submitButton span {
   font-size: 23px;
   font-weight: 500;
@@ -485,6 +533,105 @@
   clip-path: inset(50%);
 }
 
+.setupPage {
+  width: min(100% - 32px, 620px);
+  margin: 0 auto;
+  padding: 30px 0;
+}
+
+.setupCard,
+.dashboardCard {
+  width: 100%;
+  padding: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 25px 70px rgba(0, 45, 99, 0.2);
+}
+
+.setupCard .formIntro {
+  margin-top: 0;
+}
+
+.dashboardPage {
+  min-height: 100svh;
+  padding: 0 24px 48px;
+  color: #102b45;
+  background:
+    radial-gradient(ellipse at 90% 0%, rgba(201, 255, 89, 0.45), transparent 32%),
+    linear-gradient(135deg, #eaf6ff, #f7fbff 65%, #e8f3ff);
+}
+
+.dashboardHeader {
+  display: flex;
+  width: min(1120px, 100%);
+  min-height: 82px;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 auto;
+}
+
+.dashboardBrand {
+  color: #0b4e91;
+  font-family: "Manrope", sans-serif;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  text-decoration: none;
+}
+
+.dashboardSignOut {
+  padding: 10px 16px;
+  border: 1px solid #cbdcf1;
+  border-radius: 99px;
+  color: #28496b;
+  background: #fff;
+  font: 700 13px "Manrope", sans-serif;
+}
+
+.dashboardPage > .setupCard,
+.dashboardPage > .dashboardCard {
+  width: min(100%, 620px);
+  margin: 30px auto 0;
+}
+
+.dashboardLogo {
+  width: 84px;
+  height: 84px;
+  object-fit: cover;
+  border-radius: 18px;
+  background: #edf5ff;
+}
+
+.dashboardEyebrow {
+  margin: 23px 0 6px;
+  color: #0876eb;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dashboardCard h1 {
+  margin: 0;
+  color: #0b2444;
+  font-family: "Manrope", sans-serif;
+  font-size: clamp(26px, 5vw, 36px);
+  letter-spacing: -0.05em;
+}
+
+.dashboardCard > p {
+  color: #536b88;
+  line-height: 1.55;
+}
+
+.dashboardNote {
+  margin-top: 24px;
+  padding: 14px;
+  border-radius: 12px;
+  background: #edf5ff;
+}
+
 @media (max-width: 900px) {
   .content {
     width: min(100% - 48px, 680px);
@@ -563,6 +710,12 @@
 
   .card {
     padding: 19px 18px 20px;
+    border-radius: 19px;
+  }
+
+  .setupCard,
+  .dashboardCard {
+    padding: 22px 18px;
     border-radius: 19px;
   }
 
