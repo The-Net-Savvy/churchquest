@@ -17,7 +17,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    // suppressHydrationWarning: the dashboard's inline theme script sets
+    // data-cq-theme on <html> before React hydrates. Only affects this tag.
+    <html lang="en" suppressHydrationWarning>
       <body>{children}</body>
     </html>
   )
